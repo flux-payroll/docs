@@ -157,7 +157,7 @@
           "state": {
             "type": "string",
             "description": "State or region code",
-            "example": "MC"
+            "example": "MCX"
           }
         }
       },
