@@ -1,206 +1,710 @@
 {
+  "openapi": "3.0.3",
+  "info": {
+    "title": "FluxPayroll API",
+    "description": "API for calculating gross-to-net payroll calculations across different countries",
+    "version": "1.0.0",
+    "contact": {
+      "name": "FluxPayroll Support",
+      "url": "https://fluxpayroll.ai"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.fluxpayroll.ai/v1",
+      "description": "Production server"
+    }
+  ],
   "paths": {
     "/gross-to-net": {
       "post": {
-        "summary": "Gross-to-Net Payroll Calculation (Mexico)",
-        "description": "Calculates the net pay from gross pay for employees in Mexico, including taxes, deductions, and employer contributions.",
+        "summary": "Calculate gross-to-net payroll",
+        "description": "Calculates net pay, taxes, deductions, and employer contributions based on gross salary and other earnings",
+        "operationId": "calculateGrossToNet",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "example": {
-                "payroll": {
-                  "date": "2025-08-01",
-                  "frequency": "monthly"
-                },
-                "employer": {
-                  "address": {
-                    "state": "MC"
-                  },
-                  "workSchedule": {
-                    "workDays": [
-                      "MONDAY",
-                      "TUESDAY",
-                      "WEDNESDAY",
-                      "THURSDAY",
-                      "FRIDAY"
-                    ],
-                    "workHoursInDay": 8,
-                    "workDaysInWeek": 5
-                  },
-                  "contribution_rates": [
-                    {
-                      "rate_type": "accident_rate",
-                      "rate": 0.1
-                    }
-                  ]
-                },
-                "employees": [
-                  {
-                    "id": "emp1",
-                    "work_address": {
-                      "state": "CMX"
-                    },
-                    "earnings": [
-                      {
-                        "earning_type": "gross_salary",
-                        "amount": 41666.67
-                      },
-                      {
-                        "earning_type": "bonus",
-                        "amount": 5000
-                      }
-                    ],
-                    "deductions": [],
-                    "employer_contributions": [],
-                    "historic_amounts": {
-                      "earnings": [
-                        {
-                          "earning_type": "gross_salary",
-                          "ytd_amount": 0
-                        }
-                      ],
-                      "deductions": [
-                        {
-                          "deduction_type": "social_security",
-                          "ytd_amount": 0
-                        }
-                      ],
-                      "employer_contributions": [
-                        {
-                          "contribution_type": "social_security",
-                          "ytd_amount": 0
-                        },
-                        {
-                          "contribution_type": "housing_fund",
-                          "ytd_amount": 0
-                        }
-                      ],
-                      "employee_tax_payments": [
-                        {
-                          "tax_type": "income_tax",
-                          "ytd_amount": 0
-                        }
-                      ],
-                      "employer_tax_payments": [
-                        {
-                          "tax_type": "state_payroll_tax",
-                          "ytd_amount": 0
-                        }
-                      ]
-                    }
-                  }
-                ]
+              "schema": {
+                "$ref": "#/components/schemas/PayrollRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Gross-to-net calculation result",
+            "description": "Successful payroll calculation",
             "content": {
               "application/json": {
-                "example": {
-                  "employees": [
-                    {
-                      "employee_id": "emp1",
-                      "gross_pay": 46666.67,
-                      "total_employee_tax_amount": 3274.19,
-                      "total_deductions": 2193.33,
-                      "total_employer_cost": 14746.66,
-                      "net_pay": 40749.15,
-                      "employee_deductions": [
-                        {
-                          "deduction_type": "social_security",
-                          "deduction_amount": 2193.33,
-                          "is_pretax": true
-                        }
-                      ],
-                      "earnings": [
-                        {
-                          "earning_type": "gross_salary",
-                          "earning_amount": 41666.67,
-                          "is_taxed": true
-                        },
-                        {
-                          "earning_type": "bonus",
-                          "earning_amount": 5000,
-                          "is_taxed": true
-                        }
-                      ],
-                      "employer_contributions": [
-                        {
-                          "contribution_type": "social_security",
-                          "contribution_amount": 11013.33,
-                          "is_imputed_income": false
-                        },
-                        {
-                          "contribution_type": "housing_fund",
-                          "contribution_amount": 2333.33,
-                          "is_imputed_income": false
-                        }
-                      ],
-                      "employee_taxes": [
-                        {
-                          "tax_type": "income_tax",
-                          "tax_amount": 3274.19
-                        }
-                      ],
-                      "employer_taxes": [
-                        {
-                          "tax_type": "state_payroll_tax",
-                          "tax_amount": 1400
-                        }
-                      ]
-                    }
-                  ],
-                  "summary": {
-                    "total_net_pay": 40749.15,
-                    "total_gross_pay": 46666.67,
-                    "total_employer_taxes": [
-                      {
-                        "tax_type": "state_payroll_tax",
-                        "tax_amount": 1400
-                      }
-                    ],
-                    "total_employee_taxes": [
-                      {
-                        "tax_type": "income_tax",
-                        "tax_amount": 3274.19
-                      }
-                    ],
-                    "total_employer_contributions": [
-                      {
-                        "contribution_type": "social_security",
-                        "contribution_amount": 11013.33,
-                        "is_imputed_income": false
-                      },
-                      {
-                        "contribution_type": "housing_fund",
-                        "contribution_amount": 2333.33,
-                        "is_imputed_income": false
-                      }
-                    ],
-                    "total_employee_deductions": [
-                      {
-                        "deduction_type": "social_security",
-                        "deduction_amount": 2193.33,
-                        "is_pretax": true
-                      }
-                    ],
-                    "total_employee_earnings": [
-                      {
-                        "earning_type": "gross_salary",
-                        "earning_amount": 41666.67,
-                        "is_taxed": true
-                      },
-                      {
-                        "earning_type": "bonus",
-                        "earning_amount": 5000,
-                        "is_taxed": true
-                      }
-                    ]
-                  }
+                "schema": {
+                  "$ref": "#/components/schemas/PayrollResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable entity - validation errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PayrollRequest": {
+        "type": "object",
+        "required": [
+          "payroll",
+          "employer",
+          "employees"
+        ],
+        "properties": {
+          "payroll": {
+            "$ref": "#/components/schemas/PayrollInfo"
+          },
+          "employer": {
+            "$ref": "#/components/schemas/EmployerInfo"
+          },
+          "employees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeInput"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "PayrollInfo": {
+        "type": "object",
+        "required": [
+          "date",
+          "frequency"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Payroll date in YYYY-MM-DD format",
+            "example": "2025-08-01"
+          },
+          "frequency": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "bi-weekly",
+              "weekly",
+              "daily"
+            ],
+            "description": "Payroll frequency",
+            "example": "monthly"
+          }
+        }
+      },
+      "EmployerInfo": {
+        "type": "object",
+        "required": [
+          "address",
+          "workSchedule"
+        ],
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "workSchedule": {
+            "$ref": "#/components/schemas/WorkSchedule"
+          },
+          "contribution_rates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributionRate"
+            }
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "State or region code",
+            "example": "MC"
+          }
+        }
+      },
+      "WorkSchedule": {
+        "type": "object",
+        "required": [
+          "workDays",
+          "workHoursInDay",
+          "workDaysInWeek"
+        ],
+        "properties": {
+          "workDays": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "MONDAY",
+                "TUESDAY",
+                "WEDNESDAY",
+                "THURSDAY",
+                "FRIDAY",
+                "SATURDAY",
+                "SUNDAY"
+              ]
+            },
+            "description": "Working days of the week"
+          },
+          "workHoursInDay": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 24,
+            "description": "Number of working hours per day",
+            "example": 8
+          },
+          "workDaysInWeek": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7,
+            "description": "Number of working days per week",
+            "example": 5
+          }
+        }
+      },
+      "ContributionRate": {
+        "type": "object",
+        "required": [
+          "rate_type",
+          "rate"
+        ],
+        "properties": {
+          "rate_type": {
+            "type": "string",
+            "description": "Type of contribution rate",
+            "example": "accident_rate"
+          },
+          "rate": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rate value as a decimal",
+            "example": 0.1
+          }
+        }
+      },
+      "EmployeeInput": {
+        "type": "object",
+        "required": [
+          "id",
+          "work_address",
+          "earnings",
+          "deductions",
+          "employer_contributions",
+          "historic_amounts"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique employee identifier",
+            "example": "emp1"
+          },
+          "work_address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "earnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EarningInput"
+            }
+          },
+          "deductions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeductionInput"
+            }
+          },
+          "employer_contributions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployerContributionInput"
+            }
+          },
+          "historic_amounts": {
+            "$ref": "#/components/schemas/HistoricAmounts"
+          }
+        }
+      },
+      "EarningInput": {
+        "type": "object",
+        "required": [
+          "earning_type",
+          "amount"
+        ],
+        "properties": {
+          "earning_type": {
+            "type": "string",
+            "description": "Type of earning",
+            "example": "gross_salary"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Earning amount",
+            "example": 41666.67
+          }
+        }
+      },
+      "DeductionInput": {
+        "type": "object",
+        "required": [
+          "deduction_type",
+          "amount"
+        ],
+        "properties": {
+          "deduction_type": {
+            "type": "string",
+            "description": "Type of deduction"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Deduction amount"
+          }
+        }
+      },
+      "EmployerContributionInput": {
+        "type": "object",
+        "required": [
+          "contribution_type",
+          "amount"
+        ],
+        "properties": {
+          "contribution_type": {
+            "type": "string",
+            "description": "Type of employer contribution"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Contribution amount"
+          }
+        }
+      },
+      "HistoricAmounts": {
+        "type": "object",
+        "properties": {
+          "earnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoricEarning"
+            }
+          },
+          "deductions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoricDeduction"
+            }
+          },
+          "employer_contributions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoricEmployerContribution"
+            }
+          },
+          "employee_tax_payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoricTaxPayment"
+            }
+          },
+          "employer_tax_payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoricTaxPayment"
+            }
+          }
+        }
+      },
+      "HistoricEarning": {
+        "type": "object",
+        "required": [
+          "earning_type",
+          "ytd_amount"
+        ],
+        "properties": {
+          "earning_type": {
+            "type": "string",
+            "example": "gross_salary"
+          },
+          "ytd_amount": {
+            "type": "number",
+            "minimum": 0,
+            "example": 0
+          }
+        }
+      },
+      "HistoricDeduction": {
+        "type": "object",
+        "required": [
+          "deduction_type",
+          "ytd_amount"
+        ],
+        "properties": {
+          "deduction_type": {
+            "type": "string",
+            "example": "social_security"
+          },
+          "ytd_amount": {
+            "type": "number",
+            "minimum": 0,
+            "example": 0
+          }
+        }
+      },
+      "HistoricEmployerContribution": {
+        "type": "object",
+        "required": [
+          "contribution_type",
+          "ytd_amount"
+        ],
+        "properties": {
+          "contribution_type": {
+            "type": "string",
+            "example": "social_security"
+          },
+          "ytd_amount": {
+            "type": "number",
+            "minimum": 0,
+            "example": 0
+          }
+        }
+      },
+      "HistoricTaxPayment": {
+        "type": "object",
+        "required": [
+          "tax_type",
+          "ytd_amount"
+        ],
+        "properties": {
+          "tax_type": {
+            "type": "string",
+            "example": "income_tax"
+          },
+          "ytd_amount": {
+            "type": "number",
+            "minimum": 0,
+            "example": 0
+          }
+        }
+      },
+      "PayrollResponse": {
+        "type": "object",
+        "required": [
+          "employees",
+          "summary"
+        ],
+        "properties": {
+          "employees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeResult"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/PayrollSummary"
+          }
+        }
+      },
+      "EmployeeResult": {
+        "type": "object",
+        "required": [
+          "employee_id",
+          "gross_pay",
+          "total_employee_tax_amount",
+          "total_deductions",
+          "total_employer_cost",
+          "net_pay",
+          "employee_deductions",
+          "earnings",
+          "employer_contributions",
+          "employee_taxes",
+          "employer_taxes"
+        ],
+        "properties": {
+          "employee_id": {
+            "type": "string",
+            "description": "Employee identifier",
+            "example": "emp1"
+          },
+          "gross_pay": {
+            "type": "number",
+            "description": "Total gross pay amount",
+            "example": 46666.67
+          },
+          "total_employee_tax_amount": {
+            "type": "number",
+            "description": "Total amount of employee taxes",
+            "example": 3274.19
+          },
+          "total_deductions": {
+            "type": "number",
+            "description": "Total amount of employee deductions",
+            "example": 2193.33
+          },
+          "total_employer_cost": {
+            "type": "number",
+            "description": "Total cost to employer including contributions and taxes",
+            "example": 14746.66
+          },
+          "net_pay": {
+            "type": "number",
+            "description": "Net pay amount after taxes and deductions",
+            "example": 40749.15
+          },
+          "employee_deductions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeDeduction"
+            }
+          },
+          "earnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Earning"
+            }
+          },
+          "employer_contributions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployerContribution"
+            }
+          },
+          "employee_taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeTax"
+            }
+          },
+          "employer_taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployerTax"
+            }
+          }
+        }
+      },
+      "EmployeeDeduction": {
+        "type": "object",
+        "required": [
+          "deduction_type",
+          "deduction_amount",
+          "is_pretax"
+        ],
+        "properties": {
+          "deduction_type": {
+            "type": "string",
+            "example": "social_security"
+          },
+          "deduction_amount": {
+            "type": "number",
+            "example": 2193.33
+          },
+          "is_pretax": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "Earning": {
+        "type": "object",
+        "required": [
+          "earning_type",
+          "earning_amount",
+          "is_taxed"
+        ],
+        "properties": {
+          "earning_type": {
+            "type": "string",
+            "example": "gross_salary"
+          },
+          "earning_amount": {
+            "type": "number",
+            "example": 41666.67
+          },
+          "is_taxed": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "EmployerContribution": {
+        "type": "object",
+        "required": [
+          "contribution_type",
+          "contribution_amount",
+          "is_imputed_income"
+        ],
+        "properties": {
+          "contribution_type": {
+            "type": "string",
+            "example": "social_security"
+          },
+          "contribution_amount": {
+            "type": "number",
+            "example": 11013.33
+          },
+          "is_imputed_income": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "EmployeeTax": {
+        "type": "object",
+        "required": [
+          "tax_type",
+          "tax_amount"
+        ],
+        "properties": {
+          "tax_type": {
+            "type": "string",
+            "example": "income_tax"
+          },
+          "tax_amount": {
+            "type": "number",
+            "example": 3274.19
+          }
+        }
+      },
+      "EmployerTax": {
+        "type": "object",
+        "required": [
+          "tax_type",
+          "tax_amount"
+        ],
+        "properties": {
+          "tax_type": {
+            "type": "string",
+            "example": "state_payroll_tax"
+          },
+          "tax_amount": {
+            "type": "number",
+            "example": 1400
+          }
+        }
+      },
+      "PayrollSummary": {
+        "type": "object",
+        "required": [
+          "total_net_pay",
+          "total_gross_pay",
+          "total_employer_taxes",
+          "total_employee_taxes",
+          "total_employer_contributions",
+          "total_employee_deductions",
+          "total_employee_earnings"
+        ],
+        "properties": {
+          "total_net_pay": {
+            "type": "number",
+            "description": "Sum of all employee net pay",
+            "example": 40749.15
+          },
+          "total_gross_pay": {
+            "type": "number",
+            "description": "Sum of all employee gross pay",
+            "example": 46666.67
+          },
+          "total_employer_taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployerTax"
+            }
+          },
+          "total_employee_taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeTax"
+            }
+          },
+          "total_employer_contributions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployerContribution"
+            }
+          },
+          "total_employee_deductions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeDeduction"
+            }
+          },
+          "total_employee_earnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Earning"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "error",
+          "message"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error code",
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Invalid input data provided"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Field that caused the error"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Specific error message for the field"
                 }
               }
             }
