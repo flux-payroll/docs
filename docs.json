@@ -4,7 +4,7 @@
     "name": "Flux Payroll API",
     "colors": {
         "primary": "#1B45CD",
-        "light": "#07C983",
+        "light": "#1B45CD",
         "dark": "#15803D"
     },
     "favicon": "/favicon.svg",
