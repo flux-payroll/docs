@@ -1,133 +1,175 @@
-"paths": {
-  "/gross-to-net": {
-    "post": {
-      "summary": "Gross-to-Net Payroll Calculation (Mexico)",
-      "description": "Calculates the net pay from gross pay for employees in Mexico, including taxes, deductions, and employer contributions.",
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "example": {
-              "payroll": {
-                "date": "2025-08-01",
-                "frequency": "monthly"
-              },
-              "employer": {
-                "address": {
-                  "state": "MC"
-                },
-                "workSchedule": {
-                  "workDays": [
-                    "MONDAY",
-                    "TUESDAY",
-                    "WEDNESDAY",
-                    "THURSDAY",
-                    "FRIDAY"
-                  ],
-                  "workHoursInDay": 8,
-                  "workDaysInWeek": 5
-                },
-                "contribution_rates": [
-                  {
-                    "rate_type": "accident_rate",
-                    "rate": 0.1
-                  }
-                ]
-              },
-              "employees": [
-                {
-                  "id": "emp1",
-                  "work_address": {
-                    "state": "CMX"
-                  },
-                  "earnings": [
-                    {
-                      "earning_type": "gross_salary",
-                      "amount": 41666.67
-                    },
-                    {
-                      "earning_type": "bonus",
-                      "amount": 5000
-                    }
-                  ],
-                  "deductions": [],
-                  "employer_contributions": [],
-                  "historic_amounts": {
-                    "earnings": [
-                      {
-                        "earning_type": "gross_salary",
-                        "ytd_amount": 0
-                      }
-                    ],
-                    "deductions": [
-                      {
-                        "deduction_type": "social_security",
-                        "ytd_amount": 0
-                      }
-                    ],
-                    "employer_contributions": [
-                      {
-                        "contribution_type": "social_security",
-                        "ytd_amount": 0
-                      },
-                      {
-                        "contribution_type": "housing_fund",
-                        "ytd_amount": 0
-                      }
-                    ],
-                    "employee_tax_payments": [
-                      {
-                        "tax_type": "income_tax",
-                        "ytd_amount": 0
-                      }
-                    ],
-                    "employer_tax_payments": [
-                      {
-                        "tax_type": "state_payroll_tax",
-                        "ytd_amount": 0
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      "responses": {
-        "200": {
-          "description": "Gross-to-net calculation result",
+{
+  "paths": {
+    "/gross-to-net": {
+      "post": {
+        "summary": "Gross-to-Net Payroll Calculation (Mexico)",
+        "description": "Calculates the net pay from gross pay for employees in Mexico, including taxes, deductions, and employer contributions.",
+        "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "example": {
+                "payroll": {
+                  "date": "2025-08-01",
+                  "frequency": "monthly"
+                },
+                "employer": {
+                  "address": {
+                    "state": "MC"
+                  },
+                  "workSchedule": {
+                    "workDays": [
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY"
+                    ],
+                    "workHoursInDay": 8,
+                    "workDaysInWeek": 5
+                  },
+                  "contribution_rates": [
+                    {
+                      "rate_type": "accident_rate",
+                      "rate": 0.1
+                    }
+                  ]
+                },
                 "employees": [
                   {
-                    "employee_id": "emp1",
-                    "gross_pay": 46666.67,
-                    "total_employee_tax_amount": 3274.19,
-                    "total_deductions": 2193.33,
-                    "total_employer_cost": 14746.66,
-                    "net_pay": 40749.15,
-                    "employee_deductions": [
-                      {
-                        "deduction_type": "social_security",
-                        "deduction_amount": 2193.33,
-                        "is_pretax": true
-                      }
-                    ],
+                    "id": "emp1",
+                    "work_address": {
+                      "state": "CMX"
+                    },
                     "earnings": [
                       {
                         "earning_type": "gross_salary",
-                        "earning_amount": 41666.67,
-                        "is_taxed": true
+                        "amount": 41666.67
                       },
                       {
                         "earning_type": "bonus",
-                        "earning_amount": 5000,
-                        "is_taxed": true
+                        "amount": 5000
                       }
                     ],
-                    "employer_contributions": [
+                    "deductions": [],
+                    "employer_contributions": [],
+                    "historic_amounts": {
+                      "earnings": [
+                        {
+                          "earning_type": "gross_salary",
+                          "ytd_amount": 0
+                        }
+                      ],
+                      "deductions": [
+                        {
+                          "deduction_type": "social_security",
+                          "ytd_amount": 0
+                        }
+                      ],
+                      "employer_contributions": [
+                        {
+                          "contribution_type": "social_security",
+                          "ytd_amount": 0
+                        },
+                        {
+                          "contribution_type": "housing_fund",
+                          "ytd_amount": 0
+                        }
+                      ],
+                      "employee_tax_payments": [
+                        {
+                          "tax_type": "income_tax",
+                          "ytd_amount": 0
+                        }
+                      ],
+                      "employer_tax_payments": [
+                        {
+                          "tax_type": "state_payroll_tax",
+                          "ytd_amount": 0
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gross-to-net calculation result",
+            "content": {
+              "application/json": {
+                "example": {
+                  "employees": [
+                    {
+                      "employee_id": "emp1",
+                      "gross_pay": 46666.67,
+                      "total_employee_tax_amount": 3274.19,
+                      "total_deductions": 2193.33,
+                      "total_employer_cost": 14746.66,
+                      "net_pay": 40749.15,
+                      "employee_deductions": [
+                        {
+                          "deduction_type": "social_security",
+                          "deduction_amount": 2193.33,
+                          "is_pretax": true
+                        }
+                      ],
+                      "earnings": [
+                        {
+                          "earning_type": "gross_salary",
+                          "earning_amount": 41666.67,
+                          "is_taxed": true
+                        },
+                        {
+                          "earning_type": "bonus",
+                          "earning_amount": 5000,
+                          "is_taxed": true
+                        }
+                      ],
+                      "employer_contributions": [
+                        {
+                          "contribution_type": "social_security",
+                          "contribution_amount": 11013.33,
+                          "is_imputed_income": false
+                        },
+                        {
+                          "contribution_type": "housing_fund",
+                          "contribution_amount": 2333.33,
+                          "is_imputed_income": false
+                        }
+                      ],
+                      "employee_taxes": [
+                        {
+                          "tax_type": "income_tax",
+                          "tax_amount": 3274.19
+                        }
+                      ],
+                      "employer_taxes": [
+                        {
+                          "tax_type": "state_payroll_tax",
+                          "tax_amount": 1400
+                        }
+                      ]
+                    }
+                  ],
+                  "summary": {
+                    "total_net_pay": 40749.15,
+                    "total_gross_pay": 46666.67,
+                    "total_employer_taxes": [
+                      {
+                        "tax_type": "state_payroll_tax",
+                        "tax_amount": 1400
+                      }
+                    ],
+                    "total_employee_taxes": [
+                      {
+                        "tax_type": "income_tax",
+                        "tax_amount": 3274.19
+                      }
+                    ],
+                    "total_employer_contributions": [
                       {
                         "contribution_type": "social_security",
                         "contribution_amount": 11013.33,
@@ -139,66 +181,26 @@
                         "is_imputed_income": false
                       }
                     ],
-                    "employee_taxes": [
+                    "total_employee_deductions": [
                       {
-                        "tax_type": "income_tax",
-                        "tax_amount": 3274.19
+                        "deduction_type": "social_security",
+                        "deduction_amount": 2193.33,
+                        "is_pretax": true
                       }
                     ],
-                    "employer_taxes": [
+                    "total_employee_earnings": [
                       {
-                        "tax_type": "state_payroll_tax",
-                        "tax_amount": 1400
+                        "earning_type": "gross_salary",
+                        "earning_amount": 41666.67,
+                        "is_taxed": true
+                      },
+                      {
+                        "earning_type": "bonus",
+                        "earning_amount": 5000,
+                        "is_taxed": true
                       }
                     ]
                   }
-                ],
-                "summary": {
-                  "total_net_pay": 40749.15,
-                  "total_gross_pay": 46666.67,
-                  "total_employer_taxes": [
-                    {
-                      "tax_type": "state_payroll_tax",
-                      "tax_amount": 1400
-                    }
-                  ],
-                  "total_employee_taxes": [
-                    {
-                      "tax_type": "income_tax",
-                      "tax_amount": 3274.19
-                    }
-                  ],
-                  "total_employer_contributions": [
-                    {
-                      "contribution_type": "social_security",
-                      "contribution_amount": 11013.33,
-                      "is_imputed_income": false
-                    },
-                    {
-                      "contribution_type": "housing_fund",
-                      "contribution_amount": 2333.33,
-                      "is_imputed_income": false
-                    }
-                  ],
-                  "total_employee_deductions": [
-                    {
-                      "deduction_type": "social_security",
-                      "deduction_amount": 2193.33,
-                      "is_pretax": true
-                    }
-                  ],
-                  "total_employee_earnings": [
-                    {
-                      "earning_type": "gross_salary",
-                      "earning_amount": 41666.67,
-                      "is_taxed": true
-                    },
-                    {
-                      "earning_type": "bonus",
-                      "earning_amount": 5000,
-                      "is_taxed": true
-                    }
-                  ]
                 }
               }
             }
