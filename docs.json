@@ -1,5 +1,5 @@
 {
-    "$schema": "https://fluxpayroll-d2c59d3b.mintlify.app/docs.json",
+    "$schema": "https://mintlify.com/docs.json",
     "theme": "maple",
     "name": "Flux Payroll API",
     "colors": {
