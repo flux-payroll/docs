@@ -1,7 +1,7 @@
 {
     "$schema": "https://fluxpayroll-d2c59d3b.mintlify.app/docs.json",
     "theme": "mint",
-    "name": "Mint Starter Kit",
+    "name": "Flux Payroll API",
     "colors": {
         "primary": "#1B45CD",
         "light": "#07C983",
