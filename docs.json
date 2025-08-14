@@ -33,6 +33,7 @@
                     {
                         "group": "Overview",
                         "pages": [
+                            "getting-started/welcome",
                             "getting-started/introduction"
                         ]
                     },
