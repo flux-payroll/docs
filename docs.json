@@ -26,6 +26,24 @@
                         ]
                     }
                 ]
+            },
+            {
+                "tab": "Getting Started",
+                "groups": [
+                    {
+                        "group": "Overview",
+                        "pages": [
+                            "getting-started/introduction"
+                        ]
+                    },
+                    {
+                        "group": "Setup",
+                        "pages": [
+                            "getting-started/installation",
+                            "getting-started/authentication"
+                        ]
+                    }
+                ]
             }
         ],
         "global": {
