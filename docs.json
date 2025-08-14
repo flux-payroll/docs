@@ -1,97 +1,83 @@
 {
-    "$schema": "https://mintlify.com/docs.json",
-    "theme": "mint",
-    "name": "Flux Payroll API",
-    "colors": {
-        "primary": "#1B45CD",
-        "light": "#1B45CD",
-        "dark": "#15803D"
-    },
-    "favicon": "/favicon.svg",
-    "navigation": {
-        "tabs": [
-            {
-                "tab": "API reference",
-                "groups": [
-                    {
-                        "group": "API documentation",
-                        "pages": [
-                            "api-reference/introduction"
-                        ]
-                    },
-                    {
-                        "group": "Endpoint examples",
-                        "pages": [
-                            "api-reference/endpoint/create"
-                        ]
-                    }
-                ]
-            },
-            {
-                "tab": "Getting Started",
-                "groups": [
-                    {
-                        "group": "Overview",
-                        "pages": [
-                            "getting-started/welcome",
-                            "getting-started/introduction"
-                        ]
-                    },
-                    {
-                        "group": "Setup",
-                        "pages": [
-                            "getting-started/installation",
-                            "getting-started/authentication"
-                        ]
-                    }
-                ]
-            }
-        ],
-        "global": {
-            "anchors": [
-                {
-                    "anchor": "Documentation",
-                    "href": "https://mintlify.com/docs",
-                    "icon": "book-open-cover"
-                }
-            ]
-        }
-    },
-    "logo": {
-        "light": "/logo/light.svg",
-        "dark": "/logo/dark.svg",
-        "height": 40
-    },
-    "navbar": {
-        "links": [
-            {
-                "label": "Support",
-                "href": "mailto:niko@mintlify.com"
-            }
-        ],
-        "primary": {
-            "type": "button",
-            "label": "Dashboard",
-            "href": "https://dashboard.mintlify.com"
-        }
-    },
-    "contextual": {
-        "options": [
-            "copy",
-            "view",
-            "chatgpt",
-            "claude",
-            "perplexity",
-            "mcp",
-            "cursor",
-            "vscode"
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Flux Payroll API",
+  "colors": {
+    "primary": "#1B45CD",
+    "light": "#1B45CD",
+    "dark": "#15803D"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "API reference",
+        "href": "api-reference/introduction",
+        "groups": [
+          {
+            "group": "API documentation",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Endpoint examples",
+            "pages": ["api-reference/endpoint/create"]
+          }
         ]
-    },
-    "footer": {
-        "socials": {
-            "x": "https://x.com/mintlify",
-            "github": "https://github.com/mintlify",
-            "linkedin": "https://linkedin.com/company/mintlify"
+      },
+      {
+        "tab": "Getting Started",
+        "href": "getting-started/welcome",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "getting-started/welcome",
+              "getting-started/introduction"
+            ]
+          },
+          {
+            "group": "Setup",
+            "pages": [
+              "getting-started/installation",
+              "getting-started/authentication"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://mintlify.com/docs",
+          "icon": "book-open-cover"
         }
+      ]
     }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "height": 40
+  },
+  "navbar": {
+    "links": [
+      { "label": "Support", "href": "mailto:niko@mintlify.com" }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://dashboard.mintlify.com"
+    }
+  },
+  "contextual": {
+    "options": ["copy","view","chatgpt","claude","perplexity","mcp","cursor","vscode"]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/mintlify",
+      "github": "https://github.com/mintlify",
+      "linkedin": "https://linkedin.com/company/mintlify"
+    }
+  }
 }
