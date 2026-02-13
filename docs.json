@@ -34,9 +34,12 @@
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Mexico Payroll",
             "pages": [
-              "api-reference/endpoint/create"
+              "api-reference/endpoint/mexico-payroll/calculate",
+              "api-reference/endpoint/mexico-payroll/calculate-with-derived-earnings",
+              "api-reference/endpoint/mexico-payroll/get-earnings",
+              "api-reference/endpoint/mexico-payroll/generate-earnings"
             ]
           }
         ]

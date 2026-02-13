@@ -2,12 +2,21 @@
 title: "G2N API"
 ---
 
-<Note>
-Coming soon!
-</Note>
+Flux Payroll's gross-to-net API calculates net pay from gross earnings with country-specific taxes and deductions. Currently supports **Mexico** with full ISR, IMSS, INFONAVIT, and state-level payroll tax calculations.
 
-## [gross-to-net](/api-reference/endpoint/create)
+## Mexico Payroll Endpoints
 
-<Card title="Download our OpenAPI JSON" icon="leaf" href="/openapi.json">
-  View or download the OpenAPI specification file
-</Card>
+<CardGroup cols={2}>
+  <Card title="Calculate Payroll" icon="calculator" href="/api-reference/endpoint/mexico-payroll/calculate">
+    Calculate gross-to-net payroll for employees with predefined earnings.
+  </Card>
+  <Card title="Calculate with Derived Earnings" icon="clock" href="/api-reference/endpoint/mexico-payroll/calculate-with-derived-earnings">
+    Calculate payroll with auto-generated earnings from time entries and compensation.
+  </Card>
+  <Card title="Get Available Earnings" icon="list" href="/api-reference/endpoint/mexico-payroll/get-earnings">
+    Retrieve all earning types available for Mexico payroll.
+  </Card>
+  <Card title="Generate Earnings" icon="gears" href="/api-reference/endpoint/mexico-payroll/generate-earnings">
+    Preview generated earnings from time entries without running tax calculations.
+  </Card>
+</CardGroup>

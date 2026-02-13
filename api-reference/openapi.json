@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "FluxPayroll API",
-    "description": "API for calculating gross-to-net payroll calculations across different countries",
-    "version": "1.0.0",
+    "description": "API for calculating gross-to-net payroll calculations across different countries. Currently supports Mexico with ISR, IMSS, INFONAVIT, and state-level payroll tax calculations.",
+    "version": "2.0.0",
     "contact": {
       "name": "FluxPayroll",
       "url": "https://fluxpayroll.ai"
@@ -11,22 +11,23 @@
   },
   "servers": [
     {
-      "url": "https://api.fluxpayroll.ai/v1",
-      "description": "Production server"
+      "url": "https://api.staging.fluxpayroll.ai",
+      "description": "Staging"
     }
   ],
   "paths": {
-    "/gross-to-net": {
+    "/api/mexico-payroll/calculate": {
       "post": {
-        "summary": "Calculate gross-to-net payroll",
-        "description": "Calculates net pay, taxes, deductions, and employer contributions based on gross salary and other earnings",
-        "operationId": "calculateGrossToNet",
+        "summary": "Calculate payroll (G2N)",
+        "description": "Calculates gross-to-net payroll for an array of employees, including all Mexican taxes (ISR, IMSS, INFONAVIT). Returns detailed breakdown of employee and employer taxes for each employee.",
+        "operationId": "calculateMexicoPayroll",
+        "tags": ["Mexico Payroll"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PayrollRequest"
+                "$ref": "#/components/schemas/CalculatePayrollRequest"
               }
             }
           }
@@ -37,13 +38,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PayrollResponse"
+                  "$ref": "#/components/schemas/CalculatePayrollResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request - invalid input data",
+            "description": "Invalid input data",
             "content": {
               "application/json": {
                 "schema": {
@@ -52,8 +53,8 @@
               }
             }
           },
-          "422": {
-            "description": "Unprocessable entity - validation errors",
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
             "content": {
               "application/json": {
                 "schema": {
@@ -63,7 +64,160 @@
             }
           },
           "500": {
-            "description": "Internal server error",
+            "description": "Internal server error during calculation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mexico-payroll/calculate-with-derived-earnings": {
+      "post": {
+        "summary": "Calculate payroll (G2N) with auto-generated earnings",
+        "description": "Calculates gross-to-net payroll by first generating earnings from time entries and compensation, then calculating all Mexican taxes. This endpoint accepts time entries (start/end times per day) and compensation (daily/weekly/monthly/annual) and automatically derives earnings like SALARY, DOUBLE_OVERTIME, and TRIPLE_OVERTIME.",
+        "operationId": "calculateMexicoPayrollWithDerivedEarnings",
+        "tags": ["Mexico Payroll"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalculateWithDerivedEarningsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful payroll calculation with derived earnings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalculatePayrollResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data (e.g., time entries outside payroll period, invalid time format)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error during calculation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mexico-payroll/earnings": {
+      "get": {
+        "summary": "Get all available earnings for Mexico",
+        "description": "Returns a list of all earning types available for Mexico payroll calculations (e.g., SALARY, DOUBLE_OVERTIME, XMAS, VACATION_PREMIUM, etc.).",
+        "operationId": "getMexicoEarnings",
+        "tags": ["Mexico Payroll"],
+        "responses": {
+          "200": {
+            "description": "List of available earning types",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EarningResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mexico-payroll/generate-earnings": {
+      "post": {
+        "summary": "Generate earnings from time entries and compensation",
+        "description": "Generates earnings (SALARY, DOUBLE_OVERTIME, TRIPLE_OVERTIME, SUNDAY_PREMIUM, VACATION_PREMIUM) from time entries and compensation data. This endpoint does NOT calculate taxes — it only returns the generated earnings and calculated daily wage for each employee. Useful for previewing earnings before running full payroll calculations.",
+        "operationId": "generateMexicoEarnings",
+        "tags": ["Mexico Payroll"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateEarningsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully generated earnings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateEarningsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data (e.g., time entries outside payroll period, invalid time format)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error during generation",
             "content": {
               "application/json": {
                 "schema": {
@@ -76,612 +230,515 @@
       }
     }
   },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
   "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header"
+      }
+    },
     "schemas": {
-      "PayrollRequest": {
+      "CalculatePayrollRequest": {
         "type": "object",
-        "required": [
-          "payroll",
-          "employer",
-          "employees"
-        ],
+        "required": ["employees", "payrollConfig"],
+        "additionalProperties": false,
         "properties": {
-          "payroll": {
-            "$ref": "#/components/schemas/PayrollInfo"
-          },
-          "employer": {
-            "$ref": "#/components/schemas/EmployerInfo"
-          },
           "employees": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EmployeeInput"
             },
-            "minItems": 1
-          }
-        }
-      },
-      "PayrollInfo": {
-        "type": "object",
-        "required": [
-          "date",
-          "frequency"
-        ],
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date",
-            "description": "Payroll date in YYYY-MM-DD format",
-            "example": "2025-08-01"
+            "minItems": 1,
+            "description": "Array of employees to process"
           },
-          "frequency": {
-            "type": "string",
-            "enum": [
-              "monthly",
-              "bi-weekly",
-              "weekly",
-              "daily"
-            ],
-            "description": "Payroll frequency",
-            "example": "monthly"
-          }
-        }
-      },
-      "EmployerInfo": {
-        "type": "object",
-        "required": [
-          "address",
-          "workSchedule"
-        ],
-        "properties": {
-          "address": {
-            "$ref": "#/components/schemas/Address"
-          },
-          "workSchedule": {
-            "$ref": "#/components/schemas/WorkSchedule"
-          },
-          "contribution_rates": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ContributionRate"
-            }
-          }
-        }
-      },
-      "Address": {
-        "type": "object",
-        "required": [
-          "state"
-        ],
-        "properties": {
-          "state": {
-            "type": "string",
-            "description": "State or region code",
-            "example": "MCX"
-          }
-        }
-      },
-      "WorkSchedule": {
-        "type": "object",
-        "required": [
-          "workDays",
-          "workHoursInDay",
-          "workDaysInWeek"
-        ],
-        "properties": {
-          "workDays": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "MONDAY",
-                "TUESDAY",
-                "WEDNESDAY",
-                "THURSDAY",
-                "FRIDAY",
-                "SATURDAY",
-                "SUNDAY"
-              ]
-            },
-            "description": "Working days of the week"
-          },
-          "workHoursInDay": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 24,
-            "description": "Number of working hours per day",
-            "example": 8
-          },
-          "workDaysInWeek": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 7,
-            "description": "Number of working days per week",
-            "example": 5
-          }
-        }
-      },
-      "ContributionRate": {
-        "type": "object",
-        "required": [
-          "rate_type",
-          "rate"
-        ],
-        "properties": {
-          "rate_type": {
-            "type": "string",
-            "description": "Type of contribution rate",
-            "example": "accident_rate"
-          },
-          "rate": {
-            "type": "number",
-            "minimum": 0,
-            "description": "Rate value as a decimal",
-            "example": 0.1
+          "payrollConfig": {
+            "$ref": "#/components/schemas/PayrollConfig"
           }
         }
       },
       "EmployeeInput": {
         "type": "object",
-        "required": [
-          "id",
-          "work_address",
-          "earnings",
-          "deductions",
-          "employer_contributions",
-          "historic_amounts"
-        ],
+        "required": ["employeeId", "employeeStartDate", "dailyWage", "earnings", "previousBimesterEarnigs", "workAddress"],
+        "additionalProperties": false,
         "properties": {
-          "id": {
+          "employeeId": {
             "type": "string",
             "description": "Unique employee identifier",
-            "example": "emp1"
+            "example": "emp-basic-salary-001"
           },
-          "work_address": {
-            "$ref": "#/components/schemas/Address"
+          "employeeStartDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Employee hire date in ISO 8601 format",
+            "example": "2020-01-01"
+          },
+          "dailyWage": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Daily wage in MXN",
+            "example": 500
           },
           "earnings": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EarningInput"
-            }
+            },
+            "description": "Array of earnings for the payroll period"
           },
-          "deductions": {
+          "previousBimesterEarnigs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/DeductionInput"
-            }
+              "$ref": "#/components/schemas/EarningInput"
+            },
+            "default": [],
+            "description": "Previous 2 months of earnings used for SBC (Salary Base for Contributions) calculation"
           },
-          "employer_contributions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmployerContributionInput"
-            }
+          "workerRiskClass": {
+            "type": "string",
+            "enum": ["I", "II", "III", "IV", "V"],
+            "default": "I",
+            "description": "IMSS worker risk class. Defaults to 'I' if not specified."
           },
-          "historic_amounts": {
-            "$ref": "#/components/schemas/HistoricAmounts"
+          "workAddress": {
+            "$ref": "#/components/schemas/WorkAddress"
           }
         }
       },
       "EarningInput": {
         "type": "object",
-        "required": [
-          "earning_type",
-          "amount"
-        ],
+        "required": ["earningCode", "amount"],
+        "additionalProperties": false,
         "properties": {
-          "earning_type": {
+          "earningCode": {
             "type": "string",
-            "description": "Type of earning",
-            "example": "gross_salary"
+            "description": "Earning type code (e.g., SALARY, DOUBLE_OVERTIME, XMAS, VACATION_PREMIUM)",
+            "example": "SALARY"
           },
           "amount": {
             "type": "number",
             "minimum": 0,
-            "description": "Earning amount",
-            "example": 41666.67
+            "description": "Earning amount in MXN",
+            "example": 15000
           }
         }
       },
-      "DeductionInput": {
+      "PayrollConfig": {
         "type": "object",
-        "required": [
-          "deduction_type",
-          "amount"
-        ],
+        "required": ["startDate", "endDate", "period"],
+        "additionalProperties": false,
         "properties": {
-          "deduction_type": {
+          "startDate": {
             "type": "string",
-            "description": "Type of deduction"
+            "format": "date",
+            "description": "Payroll period start date in ISO 8601 format",
+            "example": "2025-09-01"
           },
-          "amount": {
-            "type": "number",
-            "minimum": 0,
-            "description": "Deduction amount"
-          }
-        }
-      },
-      "EmployerContributionInput": {
-        "type": "object",
-        "required": [
-          "contribution_type",
-          "amount"
-        ],
-        "properties": {
-          "contribution_type": {
+          "endDate": {
             "type": "string",
-            "description": "Type of employer contribution"
+            "format": "date",
+            "description": "Payroll period end date in ISO 8601 format",
+            "example": "2025-09-30"
           },
-          "amount": {
-            "type": "number",
-            "minimum": 0,
-            "description": "Contribution amount"
-          }
-        }
-      },
-      "HistoricAmounts": {
-        "type": "object",
-        "properties": {
-          "earnings": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HistoricEarning"
-            }
-          },
-          "deductions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HistoricDeduction"
-            }
-          },
-          "employer_contributions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HistoricEmployerContribution"
-            }
-          },
-          "employee_tax_payments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HistoricTaxPayment"
-            }
-          },
-          "employer_tax_payments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HistoricTaxPayment"
-            }
-          }
-        }
-      },
-      "HistoricEarning": {
-        "type": "object",
-        "required": [
-          "earning_type",
-          "ytd_amount"
-        ],
-        "properties": {
-          "earning_type": {
+          "period": {
             "type": "string",
-            "example": "gross_salary"
-          },
-          "ytd_amount": {
-            "type": "number",
-            "minimum": 0,
-            "example": 0
+            "enum": ["DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL"],
+            "description": "Payroll frequency",
+            "example": "MONTHLY"
           }
         }
       },
-      "HistoricDeduction": {
+      "WorkAddress": {
         "type": "object",
-        "required": [
-          "deduction_type",
-          "ytd_amount"
-        ],
+        "required": ["state"],
+        "additionalProperties": false,
         "properties": {
-          "deduction_type": {
+          "state": {
             "type": "string",
-            "example": "social_security"
-          },
-          "ytd_amount": {
-            "type": "number",
-            "minimum": 0,
-            "example": 0
+            "description": "Mexican state code (e.g., AGU, BCN, CMX, JAL, MEX, NLE, etc.)",
+            "example": "AGU"
           }
         }
       },
-      "HistoricEmployerContribution": {
+      "CalculateWithDerivedEarningsRequest": {
         "type": "object",
-        "required": [
-          "contribution_type",
-          "ytd_amount"
-        ],
-        "properties": {
-          "contribution_type": {
-            "type": "string",
-            "example": "social_security"
-          },
-          "ytd_amount": {
-            "type": "number",
-            "minimum": 0,
-            "example": 0
-          }
-        }
-      },
-      "HistoricTaxPayment": {
-        "type": "object",
-        "required": [
-          "tax_type",
-          "ytd_amount"
-        ],
-        "properties": {
-          "tax_type": {
-            "type": "string",
-            "example": "income_tax"
-          },
-          "ytd_amount": {
-            "type": "number",
-            "minimum": 0,
-            "example": 0
-          }
-        }
-      },
-      "PayrollResponse": {
-        "type": "object",
-        "required": [
-          "employees",
-          "summary"
-        ],
+        "required": ["employees", "payrollConfig"],
+        "additionalProperties": false,
         "properties": {
           "employees": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/EmployeeResult"
-            }
+              "$ref": "#/components/schemas/EmployeeGeneratorInput"
+            },
+            "minItems": 1,
+            "description": "Array of employees with time entries and compensation"
           },
-          "summary": {
-            "$ref": "#/components/schemas/PayrollSummary"
+          "payrollConfig": {
+            "$ref": "#/components/schemas/PayrollConfig"
+          },
+          "fillDefaultSchedule": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, auto-fills default time entries (standard work hours) for work days missing from employee timeEntries"
           }
         }
       },
-      "EmployeeResult": {
+      "EmployeeGeneratorInput": {
         "type": "object",
-        "required": [
-          "employee_id",
-          "gross_pay",
-          "total_employee_tax_amount",
-          "total_deductions",
-          "total_employer_cost",
-          "net_pay",
-          "employee_deductions",
-          "earnings",
-          "employer_contributions",
-          "employee_taxes",
-          "employer_taxes"
-        ],
+        "required": ["employeeId", "employeeStartDate", "compensation", "timeEntries", "previousBimesterEarnigs", "workAddress", "earnings"],
+        "additionalProperties": false,
         "properties": {
-          "employee_id": {
+          "employeeId": {
             "type": "string",
-            "description": "Employee identifier",
-            "example": "emp1"
+            "description": "Unique employee identifier",
+            "example": "emp-001"
           },
-          "gross_pay": {
-            "type": "number",
-            "description": "Total gross pay amount",
-            "example": 46666.67
+          "employeeStartDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Employee hire date in ISO 8601 format",
+            "example": "2020-01-01"
           },
-          "total_employee_tax_amount": {
-            "type": "number",
-            "description": "Total amount of employee taxes",
-            "example": 3274.19
+          "compensation": {
+            "$ref": "#/components/schemas/CompensationInput"
           },
-          "total_deductions": {
-            "type": "number",
-            "description": "Total amount of employee deductions",
-            "example": 2193.33
-          },
-          "total_employer_cost": {
-            "type": "number",
-            "description": "Total cost to employer including contributions and taxes",
-            "example": 14746.66
-          },
-          "net_pay": {
-            "type": "number",
-            "description": "Net pay amount after taxes and deductions",
-            "example": 40749.15
-          },
-          "employee_deductions": {
+          "timeEntries": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/EmployeeDeduction"
-            }
+              "$ref": "#/components/schemas/TimeEntry"
+            },
+            "default": [],
+            "description": "Work shifts for the payroll period"
+          },
+          "previousBimesterEarnigs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EarningInput"
+            },
+            "default": [],
+            "description": "Previous 2 months of earnings for SBC calculation"
+          },
+          "workerRiskClass": {
+            "type": "string",
+            "enum": ["I", "II", "III", "IV", "V"],
+            "default": "I",
+            "description": "IMSS worker risk class"
+          },
+          "workAddress": {
+            "$ref": "#/components/schemas/WorkAddress"
           },
           "earnings": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Earning"
-            }
-          },
-          "employer_contributions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmployerContribution"
-            }
-          },
-          "employee_taxes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmployeeTax"
-            }
-          },
-          "employer_taxes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmployerTax"
-            }
+              "$ref": "#/components/schemas/EarningInput"
+            },
+            "description": "Non-derived earnings (e.g., bonuses) to include alongside generated earnings"
           }
         }
       },
-      "EmployeeDeduction": {
+      "CompensationInput": {
         "type": "object",
-        "required": [
-          "deduction_type",
-          "deduction_amount",
-          "is_pretax"
-        ],
+        "required": ["type", "amount"],
+        "additionalProperties": false,
         "properties": {
-          "deduction_type": {
+          "type": {
             "type": "string",
-            "example": "social_security"
+            "enum": ["daily", "weekly", "monthly", "annual"],
+            "description": "Compensation frequency type",
+            "example": "monthly"
           },
-          "deduction_amount": {
+          "amount": {
             "type": "number",
-            "example": 2193.33
+            "minimum": 0,
+            "description": "Salary amount in MXN",
+            "example": 15000
+          }
+        }
+      },
+      "TimeEntry": {
+        "type": "object",
+        "required": ["date", "startTime", "endTime"],
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Work date in ISO 8601 format",
+            "example": "2025-09-01"
           },
-          "is_pretax": {
+          "startTime": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "description": "Shift start time in HH:mm 24-hour format",
+            "example": "09:00"
+          },
+          "endTime": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "description": "Shift end time in HH:mm 24-hour format",
+            "example": "17:00"
+          },
+          "dayOffType": {
+            "type": "string",
+            "enum": ["sick", "vacation", "absent", "work_illness"],
+            "description": "Type of day off, if applicable"
+          }
+        },
+        "example": {
+          "date": "2025-09-01",
+          "startTime": "09:00",
+          "endTime": "17:00"
+        }
+      },
+      "GenerateEarningsRequest": {
+        "type": "object",
+        "required": ["employees", "payrollConfig"],
+        "additionalProperties": false,
+        "properties": {
+          "employees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GenerateEarningsEmployeeInput"
+            },
+            "minItems": 1,
+            "description": "Array of employees with time entries and compensation"
+          },
+          "payrollConfig": {
+            "$ref": "#/components/schemas/PayrollConfig"
+          },
+          "fillDefaultSchedule": {
             "type": "boolean",
+            "default": false,
+            "description": "When true, auto-fills default time entries (standard work hours) for work days missing from employee timeEntries"
+          }
+        }
+      },
+      "GenerateEarningsEmployeeInput": {
+        "type": "object",
+        "required": ["employeeId", "employeeStartDate", "compensation", "timeEntries", "workAddress"],
+        "additionalProperties": false,
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "description": "Unique employee identifier",
+            "example": "emp-001"
+          },
+          "employeeStartDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Employee hire date in ISO 8601 format",
+            "example": "2020-01-01"
+          },
+          "compensation": {
+            "$ref": "#/components/schemas/CompensationInput"
+          },
+          "timeEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeEntry"
+            },
+            "default": [],
+            "description": "Work shifts for the payroll period"
+          },
+          "workAddress": {
+            "$ref": "#/components/schemas/WorkAddress"
+          }
+        }
+      },
+      "CalculatePayrollResponse": {
+        "type": "object",
+        "required": ["results"],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayrollResult"
+            },
+            "description": "Array of payroll results, one per employee"
+          }
+        }
+      },
+      "PayrollResult": {
+        "type": "object",
+        "required": ["employeeId", "grossPay", "employeeTaxes", "employerTaxes", "netPay", "totalEmployerTax", "totalEmployerContributions", "totalEmployeeTax", "totalEmployeeContributions", "dailySbc"],
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "description": "Employee identifier",
+            "example": "emp-basic-salary-001"
+          },
+          "grossPay": {
+            "type": "string",
+            "description": "Total gross earnings for the period",
+            "example": "15000.00"
+          },
+          "employeeTaxes": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TaxResult"
+            },
+            "description": "Breakdown of employee taxes (ISR, IMSS components, etc.)"
+          },
+          "employerTaxes": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TaxResult"
+            },
+            "description": "Breakdown of employer taxes and contributions"
+          },
+          "netPay": {
+            "type": "string",
+            "description": "Net pay after all employee taxes and deductions",
+            "example": "13250.45"
+          },
+          "totalEmployerTax": {
+            "type": "string",
+            "description": "Total employer taxes (taxType = TAX)",
+            "example": "450.00"
+          },
+          "totalEmployerContributions": {
+            "type": "string",
+            "description": "Total employer contributions (taxType = CONTRIBUTIONS)",
+            "example": "2100.50"
+          },
+          "totalEmployeeTax": {
+            "type": "string",
+            "description": "Total employee taxes",
+            "example": "1749.55"
+          },
+          "totalEmployeeContributions": {
+            "type": "string",
+            "description": "Total employee contributions",
+            "example": "350.00"
+          },
+          "dailySbc": {
+            "type": "string",
+            "description": "Daily SBC (Salary Base for Contributions) utilized for IMSS calculations",
+            "example": "520.55"
+          }
+        }
+      },
+      "TaxResult": {
+        "type": "object",
+        "required": ["wageBase", "taxAmount"],
+        "properties": {
+          "wageBase": {
+            "type": "string",
+            "description": "Taxable income base for this tax",
+            "example": "15000.00"
+          },
+          "taxAmount": {
+            "type": "string",
+            "description": "Calculated tax amount",
+            "example": "1200.50"
+          },
+          "subsidy": {
+            "type": "string",
+            "description": "Tax subsidy amount, if applicable (e.g., employment subsidy for ISR)",
+            "example": "0.00"
+          }
+        }
+      },
+      "EarningResponse": {
+        "type": "object",
+        "required": ["key", "country", "name", "description", "requiresManualInput"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Unique earning code",
+            "example": "SALARY"
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO country code",
+            "example": "MX"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the earning",
+            "example": "Salario Base"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the earning type"
+          },
+          "requiresManualInput": {
+            "type": "boolean",
+            "description": "Whether this earning requires manual input (true for bonuses, false for auto-derived earnings like overtime)",
             "example": true
-          }
-        }
-      },
-      "Earning": {
-        "type": "object",
-        "required": [
-          "earning_type",
-          "earning_amount",
-          "is_taxed"
-        ],
-        "properties": {
-          "earning_type": {
+          },
+          "createdAt": {
             "type": "string",
-            "example": "gross_salary"
+            "format": "date-time",
+            "description": "Creation timestamp"
           },
-          "earning_amount": {
-            "type": "number",
-            "example": 41666.67
-          },
-          "is_taxed": {
-            "type": "boolean",
-            "example": true
-          }
-        }
-      },
-      "EmployerContribution": {
-        "type": "object",
-        "required": [
-          "contribution_type",
-          "contribution_amount",
-          "is_imputed_income"
-        ],
-        "properties": {
-          "contribution_type": {
+          "updatedAt": {
             "type": "string",
-            "example": "social_security"
-          },
-          "contribution_amount": {
-            "type": "number",
-            "example": 11013.33
-          },
-          "is_imputed_income": {
-            "type": "boolean",
-            "example": false
+            "format": "date-time",
+            "description": "Last update timestamp"
           }
         }
       },
-      "EmployeeTax": {
+      "GenerateEarningsResponse": {
         "type": "object",
-        "required": [
-          "tax_type",
-          "tax_amount"
-        ],
+        "required": ["results"],
         "properties": {
-          "tax_type": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeEarningsOutput"
+            },
+            "description": "Array of generated earnings per employee"
+          }
+        }
+      },
+      "EmployeeEarningsOutput": {
+        "type": "object",
+        "required": ["employeeId", "dailyWage", "earnings"],
+        "properties": {
+          "employeeId": {
             "type": "string",
-            "example": "income_tax"
+            "description": "Employee identifier",
+            "example": "emp-001"
           },
-          "tax_amount": {
+          "dailyWage": {
             "type": "number",
-            "example": 3274.19
+            "description": "Calculated daily wage in MXN",
+            "example": 500
+          },
+          "earnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EarningOutput"
+            },
+            "description": "Generated earnings for the payroll period"
           }
         }
       },
-      "EmployerTax": {
+      "EarningOutput": {
         "type": "object",
-        "required": [
-          "tax_type",
-          "tax_amount"
-        ],
+        "required": ["earningCode", "amount"],
         "properties": {
-          "tax_type": {
+          "earningCode": {
             "type": "string",
-            "example": "state_payroll_tax"
+            "description": "Earning type code",
+            "example": "SALARY"
           },
-          "tax_amount": {
+          "amount": {
             "type": "number",
-            "example": 1400
-          }
-        }
-      },
-      "PayrollSummary": {
-        "type": "object",
-        "required": [
-          "total_net_pay",
-          "total_gross_pay",
-          "total_employer_taxes",
-          "total_employee_taxes",
-          "total_employer_contributions",
-          "total_employee_deductions",
-          "total_employee_earnings"
-        ],
-        "properties": {
-          "total_net_pay": {
-            "type": "number",
-            "description": "Sum of all employee net pay",
-            "example": 40749.15
-          },
-          "total_gross_pay": {
-            "type": "number",
-            "description": "Sum of all employee gross pay",
-            "example": 46666.67
-          },
-          "total_employer_taxes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmployerTax"
-            }
-          },
-          "total_employee_taxes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmployeeTax"
-            }
-          },
-          "total_employer_contributions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmployerContribution"
-            }
-          },
-          "total_employee_deductions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EmployeeDeduction"
-            }
-          },
-          "total_employee_earnings": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Earning"
-            }
+            "description": "Earning amount in MXN",
+            "example": 15000
           }
         }
       },
       "ErrorResponse": {
         "type": "object",
-        "required": [
-          "error",
-          "message"
-        ],
+        "required": ["error", "message"],
         "properties": {
           "error": {
             "type": "string",
