@@ -30,6 +30,34 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CalculatePayrollRequest"
+              },
+              "example": {
+                "payrollConfig": {
+                  "startDate": "2026-01-01",
+                  "endDate": "2026-01-31",
+                  "period": "MONTHLY"
+                },
+                "employees": [
+                  {
+                    "employeeId": "emp-001",
+                    "employeeStartDate": "2020-01-01",
+                    "dailyWage": 3000,
+                    "earnings": [
+                      {
+                        "earningCode": "SALARY",
+                        "amount": 91200
+                      },
+                      {
+                        "earningCode": "VACATION_PREMIUM",
+                        "amount": 3750
+                      }
+                    ],
+                    "workAddress": {
+                      "state": "AGU"
+                    },
+                    "workerRiskClass": "I"
+                  }
+                ]
               }
             }
           }
@@ -41,6 +69,134 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CalculatePayrollResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "employeeId": "emp-001",
+                      "grossPay": "94950.00",
+                      "employeeTaxes": {
+                        "MX_IMSS_DISEASE_MATERNITY_PENSIONERS_EE": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "312.90",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISEASE_MATERNITY_KIND_EE": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "293.71",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISEASE_MATERNITY_MONEY_EE": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "208.60",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_SAT_ISR": {
+                          "wageBase": "91200.00",
+                          "taxAmount": "21096.08",
+                          "taxType": "TAX",
+                          "wageBaseContributions": {
+                            "SALARY": {
+                              "earningKey": "SALARY",
+                              "grossAmount": "91200.00",
+                              "exemptionAmount": "0.00",
+                              "taxableAmount": "91200.00"
+                            },
+                            "SOCIAL_WELFARE_BENEFITS": {
+                              "earningKey": "SOCIAL_WELFARE_BENEFITS",
+                              "grossAmount": "0.00",
+                              "exemptionAmount": "0.00",
+                              "taxableAmount": "0.00"
+                            }
+                          }
+                        },
+                        "MX_IMSS_DISABILITY_LIFE_EE": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "521.50",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_RETIREMENT_ADVANCED_AGE_EE": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "938.71",
+                          "taxType": "CONTRIBUTIONS"
+                        }
+                      },
+                      "employerTaxes": {
+                        "MX_IMSS_DISEASE_MATERNITY_KIND_ER": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "1488.59",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_WORK_RISK": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "453.54",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_RETIREMENT_OLD_AGE_ER": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "1668.82",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_RETIREMENT_ADVANCED_AGE_ER": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "5358.56",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISEASE_MATERNITY_PENSIONERS_ER": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "876.13",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISEASE_MATERNITY_MONEY_ER": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "584.09",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISABILITY_LIFE_ER": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "1460.21",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_INFONAVIT_HOUSING": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "4172.04",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_NURSERY_SOCIAL_BENEFITS": {
+                          "wageBase": "83440.75",
+                          "taxAmount": "834.41",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_AGU_PAYROLL": {
+                          "wageBase": "91200.00",
+                          "taxAmount": "2280.00",
+                          "taxType": "TAX",
+                          "wageBaseContributions": {
+                            "SALARY": {
+                              "earningKey": "SALARY",
+                              "grossAmount": "91200.00",
+                              "exemptionAmount": "0.00",
+                              "taxableAmount": "91200.00"
+                            },
+                            "TERMINATION_COMPENSATION": {
+                              "earningKey": "TERMINATION_COMPENSATION",
+                              "grossAmount": "0.00",
+                              "exemptionAmount": "0.00",
+                              "taxableAmount": "0.00"
+                            }
+                          }
+                        }
+                      },
+                      "totalEmployerTaxes": "19176.39",
+                      "totalEmployeeTaxes": "23371.50",
+                      "netPay": "71578.50",
+                      "dailySbc": "2828.50",
+                      "totalEmployeeTax": "21096.08",
+                      "totalEmployeeContributions": "2275.42",
+                      "totalEmployerTax": "2280.00",
+                      "totalEmployerContributions": "16896.39"
+                    }
+                  ]
                 }
               }
             }
