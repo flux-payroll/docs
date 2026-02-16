@@ -19,7 +19,7 @@
     "/api/mexico-payroll/calculate": {
       "post": {
         "summary": "Calculate payroll (G2N)",
-        "description": "Calculates gross-to-net payroll for an array of employees, including all Mexican taxes (ISR, IMSS, INFONAVIT). Returns detailed breakdown of employee and employer taxes for each employee.",
+        "description": "Calculates gross-to-net payroll for an array of employees, including all Mexican taxes (ISR, IMSS, INFONAVIT). Returns detailed breakdown of employee and employer taxes for each employee.\n\nAvailable earnings can be obtained from the [List Earnings](/api-reference/endpoint/mexico-payroll/get-earnings) endpoint. The response includes taxes and social security contributions — see [List Taxes](/api-reference/endpoint/mexico-payroll/get-taxes) and [List Social Security Contributions](/api-reference/endpoint/mexico-payroll/get-contributions) for details.",
         "operationId": "calculateMexicoPayroll",
         "tags": [
           "Mexico Payroll"
@@ -237,7 +237,7 @@
     "/api/mexico-payroll/calculate-with-derived-earnings": {
       "post": {
         "summary": "Calculate payroll (G2N) with auto-generated earnings",
-        "description": "Calculates gross-to-net payroll by first generating earnings from time entries and compensation, then calculating all Mexican taxes. This endpoint accepts time entries (start/end times per day) and compensation (daily/weekly/monthly/annual) and automatically derives earnings like SALARY, DOUBLE_OVERTIME, and TRIPLE_OVERTIME.",
+        "description": "Calculates gross-to-net payroll by first generating earnings from time entries and compensation, then calculating all Mexican taxes. This endpoint accepts time entries (start/end times per day) and compensation (daily/weekly/monthly/annual) and automatically derives earnings like SALARY, DOUBLE_OVERTIME, and TRIPLE_OVERTIME.\n\nAvailable earnings can be obtained from the [List Earnings](/api-reference/endpoint/mexico-payroll/get-earnings) endpoint. The response includes taxes and social security contributions — see [List Taxes](/api-reference/endpoint/mexico-payroll/get-taxes) and [List Social Security Contributions](/api-reference/endpoint/mexico-payroll/get-contributions) for details.",
         "operationId": "calculateMexicoPayrollWithDerivedEarnings",
         "tags": [
           "Mexico Payroll"
@@ -548,8 +548,8 @@
     },
     "/api/mexico-payroll/contributions": {
       "get": {
-        "summary": "Get all contributions for Mexico",
-        "description": "Returns a list of all contributions for Mexico, including jurisdiction and agency details. Supports optional locale parameter for translated names and descriptions.",
+        "summary": "Get all social security contributions for Mexico",
+        "description": "Returns a list of all social security contributions for Mexico, including jurisdiction and agency details. Supports optional locale parameter for translated names and descriptions.",
         "operationId": "getMexicoContributions",
         "tags": [
           "Mexico Payroll"
@@ -610,7 +610,7 @@
     "/api/mexico-payroll/generate-earnings": {
       "post": {
         "summary": "Generate earnings from time entries and compensation",
-        "description": "Generates earnings (SALARY, DOUBLE_OVERTIME, TRIPLE_OVERTIME, SUNDAY_PREMIUM, VACATION_PREMIUM) from time entries and compensation data. This endpoint does NOT calculate taxes — it only returns the generated earnings and calculated daily wage for each employee. Useful for previewing earnings before running full payroll calculations.",
+        "description": "Generates earnings (SALARY, DOUBLE_OVERTIME, TRIPLE_OVERTIME, SUNDAY_PREMIUM, VACATION_PREMIUM) from time entries and compensation data. This endpoint does NOT calculate taxes — it only returns the generated earnings and calculated daily wage for each employee. Useful for previewing earnings before running full payroll calculations.\n\nAvailable earnings can be obtained from the [List Earnings](/api-reference/endpoint/mexico-payroll/get-earnings) endpoint.",
         "operationId": "generateMexicoEarnings",
         "tags": [
           "Mexico Payroll"
