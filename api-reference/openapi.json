@@ -21,7 +21,9 @@
         "summary": "Calculate payroll (G2N)",
         "description": "Calculates gross-to-net payroll for an array of employees, including all Mexican taxes (ISR, IMSS, INFONAVIT). Returns detailed breakdown of employee and employer taxes for each employee.",
         "operationId": "calculateMexicoPayroll",
-        "tags": ["Mexico Payroll"],
+        "tags": [
+          "Mexico Payroll"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -81,7 +83,9 @@
         "summary": "Calculate payroll (G2N) with auto-generated earnings",
         "description": "Calculates gross-to-net payroll by first generating earnings from time entries and compensation, then calculating all Mexican taxes. This endpoint accepts time entries (start/end times per day) and compensation (daily/weekly/monthly/annual) and automatically derives earnings like SALARY, DOUBLE_OVERTIME, and TRIPLE_OVERTIME.",
         "operationId": "calculateMexicoPayrollWithDerivedEarnings",
-        "tags": ["Mexico Payroll"],
+        "tags": [
+          "Mexico Payroll"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -99,6 +103,134 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CalculatePayrollResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "employeeId": "emp-001",
+                      "grossPay": "50000.00",
+                      "employeeTaxes": {
+                        "MX_IMSS_DISEASE_MATERNITY_PENSIONERS_EE": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "192.16",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISEASE_MATERNITY_KIND_EE": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "164.92",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISEASE_MATERNITY_MONEY_EE": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "128.10",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_SAT_ISR": {
+                          "wageBase": "50000.00",
+                          "taxAmount": "9107.82",
+                          "taxType": "TAX",
+                          "wageBaseContributions": {
+                            "SALARY": {
+                              "earningKey": "SALARY",
+                              "grossAmount": "50000.00",
+                              "exemptionAmount": "0.00",
+                              "taxableAmount": "50000.00"
+                            },
+                            "SOCIAL_WELFARE_BENEFITS": {
+                              "earningKey": "SOCIAL_WELFARE_BENEFITS",
+                              "grossAmount": "0.00",
+                              "exemptionAmount": "0.00",
+                              "taxableAmount": "0.00"
+                            }
+                          }
+                        },
+                        "MX_IMSS_DISABILITY_LIFE_EE": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "320.26",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_RETIREMENT_ADVANCED_AGE_EE": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "576.47",
+                          "taxType": "CONTRIBUTIONS"
+                        }
+                      },
+                      "employerTaxes": {
+                        "MX_IMSS_DISEASE_MATERNITY_KIND_ER": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "1134.40",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_WORK_RISK": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "278.52",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_RETIREMENT_OLD_AGE_ER": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "1024.84",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_RETIREMENT_ADVANCED_AGE_ER": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "3290.75",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISEASE_MATERNITY_PENSIONERS_ER": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "538.04",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISEASE_MATERNITY_MONEY_ER": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "358.69",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_DISABILITY_LIFE_ER": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "896.73",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_INFONAVIT_HOUSING": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "2562.09",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_IMSS_NURSERY_SOCIAL_BENEFITS": {
+                          "wageBase": "51241.80",
+                          "taxAmount": "512.42",
+                          "taxType": "CONTRIBUTIONS"
+                        },
+                        "MX_AGU_PAYROLL": {
+                          "wageBase": "50000.00",
+                          "taxAmount": "1250.00",
+                          "taxType": "TAX",
+                          "wageBaseContributions": {
+                            "SALARY": {
+                              "earningKey": "SALARY",
+                              "grossAmount": "50000.00",
+                              "exemptionAmount": "0.00",
+                              "taxableAmount": "50000.00"
+                            },
+                            "TERMINATION_COMPENSATION": {
+                              "earningKey": "TERMINATION_COMPENSATION",
+                              "grossAmount": "0.00",
+                              "exemptionAmount": "0.00",
+                              "taxableAmount": "0.00"
+                            }
+                          }
+                        }
+                      },
+                      "totalEmployerTaxes": "11846.48",
+                      "totalEmployeeTaxes": "10489.73",
+                      "netPay": "39510.27",
+                      "dailySbc": "1737.01",
+                      "totalEmployeeTax": "9107.82",
+                      "totalEmployeeContributions": "1381.91",
+                      "totalEmployerTax": "1250.00",
+                      "totalEmployerContributions": "10596.48"
+                    }
+                  ]
                 }
               }
             }
@@ -141,7 +273,9 @@
         "summary": "Get all available earnings for Mexico",
         "description": "Returns a list of all earning types available for Mexico payroll calculations (e.g., SALARY, DOUBLE_OVERTIME, XMAS, VACATION_PREMIUM, etc.). Supports optional locale parameter for translated names and descriptions.",
         "operationId": "getMexicoEarnings",
-        "tags": ["Mexico Payroll"],
+        "tags": [
+          "Mexico Payroll"
+        ],
         "parameters": [
           {
             "name": "locale",
@@ -149,7 +283,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["es-MX", "en-US", "en-MX"]
+              "enum": [
+                "es-MX",
+                "en-US",
+                "en-MX"
+              ]
             },
             "description": "Locale for translated names and descriptions. Defaults to Spanish (es-MX) if not specified."
           }
@@ -196,7 +334,9 @@
         "summary": "Get all taxes for Mexico",
         "description": "Returns a list of all taxes for Mexico, including jurisdiction and agency details. Supports optional locale parameter for translated names and descriptions.",
         "operationId": "getMexicoTaxes",
-        "tags": ["Mexico Payroll"],
+        "tags": [
+          "Mexico Payroll"
+        ],
         "parameters": [
           {
             "name": "locale",
@@ -204,7 +344,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["es-MX", "en-US", "en-MX"]
+              "enum": [
+                "es-MX",
+                "en-US",
+                "en-MX"
+              ]
             },
             "description": "Locale for translated names and descriptions. Defaults to Spanish (es-MX) if not specified."
           }
@@ -251,7 +395,9 @@
         "summary": "Get all contributions for Mexico",
         "description": "Returns a list of all contributions for Mexico, including jurisdiction and agency details. Supports optional locale parameter for translated names and descriptions.",
         "operationId": "getMexicoContributions",
-        "tags": ["Mexico Payroll"],
+        "tags": [
+          "Mexico Payroll"
+        ],
         "parameters": [
           {
             "name": "locale",
@@ -259,7 +405,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["es-MX", "en-US", "en-MX"]
+              "enum": [
+                "es-MX",
+                "en-US",
+                "en-MX"
+              ]
             },
             "description": "Locale for translated names and descriptions. Defaults to Spanish (es-MX) if not specified."
           }
@@ -306,7 +456,9 @@
         "summary": "Generate earnings from time entries and compensation",
         "description": "Generates earnings (SALARY, DOUBLE_OVERTIME, TRIPLE_OVERTIME, SUNDAY_PREMIUM, VACATION_PREMIUM) from time entries and compensation data. This endpoint does NOT calculate taxes — it only returns the generated earnings and calculated daily wage for each employee. Useful for previewing earnings before running full payroll calculations.",
         "operationId": "generateMexicoEarnings",
-        "tags": ["Mexico Payroll"],
+        "tags": [
+          "Mexico Payroll"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -378,7 +530,10 @@
     "schemas": {
       "CalculatePayrollRequest": {
         "type": "object",
-        "required": ["employees", "payrollConfig"],
+        "required": [
+          "employees",
+          "payrollConfig"
+        ],
         "additionalProperties": false,
         "properties": {
           "employees": {
@@ -396,7 +551,14 @@
       },
       "EmployeeInput": {
         "type": "object",
-        "required": ["employeeId", "employeeStartDate", "dailyWage", "earnings", "previousBimesterEarnigs", "workAddress"],
+        "required": [
+          "employeeId",
+          "employeeStartDate",
+          "dailyWage",
+          "earnings",
+          "previousBimesterEarnigs",
+          "workAddress"
+        ],
         "additionalProperties": false,
         "properties": {
           "employeeId": {
@@ -421,6 +583,7 @@
             "items": {
               "$ref": "#/components/schemas/EarningInput"
             },
+            "default": [],
             "description": "Array of earnings for the payroll period"
           },
           "previousBimesterEarnigs": {
@@ -433,7 +596,13 @@
           },
           "workerRiskClass": {
             "type": "string",
-            "enum": ["I", "II", "III", "IV", "V"],
+            "enum": [
+              "I",
+              "II",
+              "III",
+              "IV",
+              "V"
+            ],
             "default": "I",
             "description": "IMSS worker risk class. Defaults to 'I' if not specified."
           },
@@ -444,13 +613,16 @@
       },
       "EarningInput": {
         "type": "object",
-        "required": ["earningCode", "amount"],
+        "required": [
+          "earningCode",
+          "amount"
+        ],
         "additionalProperties": false,
         "properties": {
           "earningCode": {
             "type": "string",
             "description": "Earning type code (e.g., SALARY, DOUBLE_OVERTIME, XMAS, VACATION_PREMIUM)",
-            "example": "SALARY"
+            "example": "SUNDAY_PREMIUM"
           },
           "amount": {
             "type": "number",
@@ -462,7 +634,11 @@
       },
       "PayrollConfig": {
         "type": "object",
-        "required": ["startDate", "endDate", "period"],
+        "required": [
+          "startDate",
+          "endDate",
+          "period"
+        ],
         "additionalProperties": false,
         "properties": {
           "startDate": {
@@ -479,7 +655,14 @@
           },
           "period": {
             "type": "string",
-            "enum": ["DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "SEMI_ANNUAL", "ANNUAL"],
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "SEMI_ANNUAL",
+              "ANNUAL"
+            ],
             "description": "Payroll frequency",
             "example": "MONTHLY"
           }
@@ -487,7 +670,9 @@
       },
       "WorkAddress": {
         "type": "object",
-        "required": ["state"],
+        "required": [
+          "state"
+        ],
         "additionalProperties": false,
         "properties": {
           "state": {
@@ -499,7 +684,10 @@
       },
       "CalculateWithDerivedEarningsRequest": {
         "type": "object",
-        "required": ["employees", "payrollConfig"],
+        "required": [
+          "employees",
+          "payrollConfig"
+        ],
         "additionalProperties": false,
         "properties": {
           "employees": {
@@ -511,18 +699,31 @@
             "description": "Array of employees with time entries and compensation"
           },
           "payrollConfig": {
-            "$ref": "#/components/schemas/PayrollConfig"
+            "$ref": "#/components/schemas/PayrollConfig",
+            "example": {
+              "startDate": "2026-01-01",
+              "endDate": "2026-01-31",
+              "period": "MONTHLY"
+            }
           },
           "fillDefaultSchedule": {
             "type": "boolean",
-            "default": false,
+            "default": true,
             "description": "When true, auto-fills default time entries (standard work hours) for work days missing from employee timeEntries"
           }
         }
       },
       "EmployeeGeneratorInput": {
         "type": "object",
-        "required": ["employeeId", "employeeStartDate", "compensation", "timeEntries", "previousBimesterEarnigs", "workAddress", "earnings"],
+        "required": [
+          "employeeId",
+          "employeeStartDate",
+          "compensation",
+          "timeEntries",
+          "previousBimesterEarnigs",
+          "workAddress",
+          "earnings"
+        ],
         "additionalProperties": false,
         "properties": {
           "employeeId": {
@@ -537,7 +738,11 @@
             "example": "2020-01-01"
           },
           "compensation": {
-            "$ref": "#/components/schemas/CompensationInput"
+            "$ref": "#/components/schemas/CompensationInput",
+            "example": {
+              "type": "MONTHLY",
+              "amount": 50000
+            }
           },
           "timeEntries": {
             "type": "array",
@@ -557,7 +762,13 @@
           },
           "workerRiskClass": {
             "type": "string",
-            "enum": ["I", "II", "III", "IV", "V"],
+            "enum": [
+              "I",
+              "II",
+              "III",
+              "IV",
+              "V"
+            ],
             "default": "I",
             "description": "IMSS worker risk class"
           },
@@ -569,18 +780,27 @@
             "items": {
               "$ref": "#/components/schemas/EarningInput"
             },
+            "default": [],
             "description": "Non-derived earnings (e.g., bonuses) to include alongside generated earnings"
           }
         }
       },
       "CompensationInput": {
         "type": "object",
-        "required": ["type", "amount"],
+        "required": [
+          "type",
+          "amount"
+        ],
         "additionalProperties": false,
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["daily", "weekly", "monthly", "annual"],
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly",
+              "annual"
+            ],
             "description": "Compensation frequency type",
             "example": "monthly"
           },
@@ -594,7 +814,11 @@
       },
       "TimeEntry": {
         "type": "object",
-        "required": ["date", "startTime", "endTime"],
+        "required": [
+          "date",
+          "startTime",
+          "endTime"
+        ],
         "additionalProperties": false,
         "properties": {
           "date": {
@@ -617,7 +841,12 @@
           },
           "dayOffType": {
             "type": "string",
-            "enum": ["sick", "vacation", "absent", "work_illness"],
+            "enum": [
+              "sick",
+              "vacation",
+              "absent",
+              "work_illness"
+            ],
             "description": "Type of day off, if applicable"
           }
         },
@@ -629,7 +858,10 @@
       },
       "GenerateEarningsRequest": {
         "type": "object",
-        "required": ["employees", "payrollConfig"],
+        "required": [
+          "employees",
+          "payrollConfig"
+        ],
         "additionalProperties": false,
         "properties": {
           "employees": {
@@ -652,7 +884,13 @@
       },
       "GenerateEarningsEmployeeInput": {
         "type": "object",
-        "required": ["employeeId", "employeeStartDate", "compensation", "timeEntries", "workAddress"],
+        "required": [
+          "employeeId",
+          "employeeStartDate",
+          "compensation",
+          "timeEntries",
+          "workAddress"
+        ],
         "additionalProperties": false,
         "properties": {
           "employeeId": {
@@ -684,7 +922,9 @@
       },
       "CalculatePayrollResponse": {
         "type": "object",
-        "required": ["results"],
+        "required": [
+          "results"
+        ],
         "properties": {
           "results": {
             "type": "array",
@@ -697,7 +937,18 @@
       },
       "PayrollResult": {
         "type": "object",
-        "required": ["employeeId", "grossPay", "employeeTaxes", "employerTaxes", "netPay", "totalEmployerTax", "totalEmployerContributions", "totalEmployeeTax", "totalEmployeeContributions", "dailySbc"],
+        "required": [
+          "employeeId",
+          "grossPay",
+          "employeeTaxes",
+          "employerTaxes",
+          "netPay",
+          "totalEmployerTax",
+          "totalEmployerContributions",
+          "totalEmployeeTax",
+          "totalEmployeeContributions",
+          "dailySbc"
+        ],
         "properties": {
           "employeeId": {
             "type": "string",
@@ -757,7 +1008,10 @@
       },
       "TaxResult": {
         "type": "object",
-        "required": ["wageBase", "taxAmount"],
+        "required": [
+          "wageBase",
+          "taxAmount"
+        ],
         "properties": {
           "wageBase": {
             "type": "string",
@@ -778,7 +1032,11 @@
       },
       "EarningResponse": {
         "type": "object",
-        "required": ["key", "name", "description"],
+        "required": [
+          "key",
+          "name",
+          "description"
+        ],
         "properties": {
           "key": {
             "type": "string",
@@ -798,7 +1056,9 @@
       },
       "GenerateEarningsResponse": {
         "type": "object",
-        "required": ["results"],
+        "required": [
+          "results"
+        ],
         "properties": {
           "results": {
             "type": "array",
@@ -811,7 +1071,11 @@
       },
       "EmployeeEarningsOutput": {
         "type": "object",
-        "required": ["employeeId", "dailyWage", "earnings"],
+        "required": [
+          "employeeId",
+          "dailyWage",
+          "earnings"
+        ],
         "properties": {
           "employeeId": {
             "type": "string",
@@ -834,7 +1098,10 @@
       },
       "EarningOutput": {
         "type": "object",
-        "required": ["earningCode", "amount"],
+        "required": [
+          "earningCode",
+          "amount"
+        ],
         "properties": {
           "earningCode": {
             "type": "string",
@@ -850,7 +1117,10 @@
       },
       "TaxJurisdiction": {
         "type": "object",
-        "required": ["key", "name"],
+        "required": [
+          "key",
+          "name"
+        ],
         "properties": {
           "key": {
             "type": "string",
@@ -866,7 +1136,10 @@
       },
       "TaxAgency": {
         "type": "object",
-        "required": ["key", "name"],
+        "required": [
+          "key",
+          "name"
+        ],
         "properties": {
           "key": {
             "type": "string",
@@ -882,7 +1155,17 @@
       },
       "TaxResponse": {
         "type": "object",
-        "required": ["key", "name", "description", "paidBy", "jurisdiction", "levyingAgency", "collectionAgency", "levyingFrequency", "depositFrequency"],
+        "required": [
+          "key",
+          "name",
+          "description",
+          "paidBy",
+          "jurisdiction",
+          "levyingAgency",
+          "collectionAgency",
+          "levyingFrequency",
+          "depositFrequency"
+        ],
         "properties": {
           "key": {
             "type": "string",
@@ -901,7 +1184,10 @@
           },
           "paidBy": {
             "type": "string",
-            "enum": ["EMPLOYEE", "EMPLOYER"],
+            "enum": [
+              "EMPLOYEE",
+              "EMPLOYER"
+            ],
             "description": "Who is responsible for paying this tax/contribution",
             "example": "EMPLOYEE"
           },
@@ -916,13 +1202,33 @@
           },
           "levyingFrequency": {
             "type": "string",
-            "enum": ["DAILY", "WEEKLY", "BIWEEKLY", "SEMI_MONTHLY", "MONTHLY", "BIMONTHLY", "QUARTERLY", "SEMI_ANNUALLY", "ANNUALLY"],
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "BIWEEKLY",
+              "SEMI_MONTHLY",
+              "MONTHLY",
+              "BIMONTHLY",
+              "QUARTERLY",
+              "SEMI_ANNUALLY",
+              "ANNUALLY"
+            ],
             "description": "How frequently this tax is levied",
             "example": "MONTHLY"
           },
           "depositFrequency": {
             "type": "string",
-            "enum": ["DAILY", "WEEKLY", "BIWEEKLY", "SEMI_MONTHLY", "MONTHLY", "BIMONTHLY", "QUARTERLY", "SEMI_ANNUALLY", "ANNUALLY"],
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "BIWEEKLY",
+              "SEMI_MONTHLY",
+              "MONTHLY",
+              "BIMONTHLY",
+              "QUARTERLY",
+              "SEMI_ANNUALLY",
+              "ANNUALLY"
+            ],
             "description": "How frequently this tax must be deposited",
             "example": "MONTHLY"
           },
@@ -935,7 +1241,10 @@
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["error", "message"],
+        "required": [
+          "error",
+          "message"
+        ],
         "properties": {
           "error": {
             "type": "string",
