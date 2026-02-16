@@ -621,6 +621,27 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GenerateEarningsRequest"
+              },
+              "example": {
+                "fillDefaultSchedule": true,
+                "employees": [
+                  {
+                    "employeeId": "emp-001",
+                    "employeeStartDate": "2020-01-01",
+                    "compensation": {
+                      "type": "monthly",
+                      "amount": 91200
+                    },
+                    "workAddress": {
+                      "state": "BCN"
+                    }
+                  }
+                ],
+                "payrollConfig": {
+                  "startDate": "2026-01-01",
+                  "endDate": "2026-01-31",
+                  "period": "MONTHLY"
+                }
               }
             }
           }
@@ -632,6 +653,20 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GenerateEarningsResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "employeeId": "emp-001",
+                      "dailyWage": 3000,
+                      "earnings": [
+                        {
+                          "earningCode": "SALARY",
+                          "amount": 91200
+                        }
+                      ]
+                    }
+                  ]
                 }
               }
             }
