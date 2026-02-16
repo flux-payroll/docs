@@ -139,9 +139,21 @@
     "/api/mexico-payroll/earnings": {
       "get": {
         "summary": "Get all available earnings for Mexico",
-        "description": "Returns a list of all earning types available for Mexico payroll calculations (e.g., SALARY, DOUBLE_OVERTIME, XMAS, VACATION_PREMIUM, etc.).",
+        "description": "Returns a list of all earning types available for Mexico payroll calculations (e.g., SALARY, DOUBLE_OVERTIME, XMAS, VACATION_PREMIUM, etc.). Supports optional locale parameter for translated names and descriptions.",
         "operationId": "getMexicoEarnings",
         "tags": ["Mexico Payroll"],
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["es-MX", "en-US", "en-MX"]
+            },
+            "description": "Locale for translated names and descriptions. Defaults to Spanish (es-MX) if not specified."
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of available earning types",
@@ -152,6 +164,126 @@
                   "items": {
                     "$ref": "#/components/schemas/EarningResponse"
                   }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported locale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mexico-payroll/taxes": {
+      "get": {
+        "summary": "Get all taxes for Mexico",
+        "description": "Returns a list of all taxes for Mexico, including jurisdiction and agency details. Supports optional locale parameter for translated names and descriptions.",
+        "operationId": "getMexicoTaxes",
+        "tags": ["Mexico Payroll"],
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["es-MX", "en-US", "en-MX"]
+            },
+            "description": "Locale for translated names and descriptions. Defaults to Spanish (es-MX) if not specified."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of taxes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaxResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported locale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mexico-payroll/contributions": {
+      "get": {
+        "summary": "Get all contributions for Mexico",
+        "description": "Returns a list of all contributions for Mexico, including jurisdiction and agency details. Supports optional locale parameter for translated names and descriptions.",
+        "operationId": "getMexicoContributions",
+        "tags": ["Mexico Payroll"],
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["es-MX", "en-US", "en-MX"]
+            },
+            "description": "Locale for translated names and descriptions. Defaults to Spanish (es-MX) if not specified."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contributions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaxResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported locale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -646,17 +778,12 @@
       },
       "EarningResponse": {
         "type": "object",
-        "required": ["key", "country", "name", "description", "requiresManualInput"],
+        "required": ["key", "name", "description"],
         "properties": {
           "key": {
             "type": "string",
             "description": "Unique earning code",
             "example": "SALARY"
-          },
-          "country": {
-            "type": "string",
-            "description": "ISO country code",
-            "example": "MX"
           },
           "name": {
             "type": "string",
@@ -666,21 +793,6 @@
           "description": {
             "type": "string",
             "description": "Detailed description of the earning type"
-          },
-          "requiresManualInput": {
-            "type": "boolean",
-            "description": "Whether this earning requires manual input (true for bonuses, false for auto-derived earnings like overtime)",
-            "example": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
           }
         }
       },
@@ -733,6 +845,91 @@
             "type": "number",
             "description": "Earning amount in MXN",
             "example": 15000
+          }
+        }
+      },
+      "TaxJurisdiction": {
+        "type": "object",
+        "required": ["key", "name"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Unique jurisdiction key",
+            "example": "MX"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the jurisdiction",
+            "example": "Mexico"
+          }
+        }
+      },
+      "TaxAgency": {
+        "type": "object",
+        "required": ["key", "name"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Unique tax agency key",
+            "example": "MX_SAT"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the tax agency",
+            "example": "Servicio de Administración Tributaria"
+          }
+        }
+      },
+      "TaxResponse": {
+        "type": "object",
+        "required": ["key", "name", "description", "paidBy", "jurisdiction", "levyingAgency", "collectionAgency", "levyingFrequency", "depositFrequency"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Unique tax/contribution key",
+            "example": "MX_ISR"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the tax (localized if locale is specified)",
+            "example": "Impuesto Sobre la Renta"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description (localized if locale is specified)",
+            "example": "Impuesto sobre la renta para empleados"
+          },
+          "paidBy": {
+            "type": "string",
+            "enum": ["EMPLOYEE", "EMPLOYER"],
+            "description": "Who is responsible for paying this tax/contribution",
+            "example": "EMPLOYEE"
+          },
+          "jurisdiction": {
+            "$ref": "#/components/schemas/TaxJurisdiction"
+          },
+          "levyingAgency": {
+            "$ref": "#/components/schemas/TaxAgency"
+          },
+          "collectionAgency": {
+            "$ref": "#/components/schemas/TaxAgency"
+          },
+          "levyingFrequency": {
+            "type": "string",
+            "enum": ["DAILY", "WEEKLY", "BIWEEKLY", "SEMI_MONTHLY", "MONTHLY", "BIMONTHLY", "QUARTERLY", "SEMI_ANNUALLY", "ANNUALLY"],
+            "description": "How frequently this tax is levied",
+            "example": "MONTHLY"
+          },
+          "depositFrequency": {
+            "type": "string",
+            "enum": ["DAILY", "WEEKLY", "BIWEEKLY", "SEMI_MONTHLY", "MONTHLY", "BIMONTHLY", "QUARTERLY", "SEMI_ANNUALLY", "ANNUALLY"],
+            "description": "How frequently this tax must be deposited",
+            "example": "MONTHLY"
+          },
+          "reportingCode": {
+            "type": "string",
+            "description": "Reporting code for this tax",
+            "example": "001"
           }
         }
       },
